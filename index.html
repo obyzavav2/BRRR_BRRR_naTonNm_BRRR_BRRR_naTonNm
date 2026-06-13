@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Чо я создал блять</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: url('https://f.sravni.ru/cms/uploads/2025/10/312973-biogjrzka05m3hynlf4x.jpg') no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Segoe UI', 'Poppins', 'Montserrat', system-ui, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(2px);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .timer-card {
+            position: relative;
+            z-index: 2;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(12px);
+            border-radius: 2.5rem;
+            padding: 2rem;
+            max-width: 650px;
+            width: 100%;
+            box-shadow: 0 25px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(255, 140, 0, 0.4);
+            border: 1px solid #ffaa33;
+            transition: 0.2s;
+        }
+
+        h1 {
+            text-align: center;
+            font-weight: 800;
+            font-size: 2.5rem;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, #FFD966, #FF8C00);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 5px black;
+            margin-bottom: 0.3rem;
+            word-break: keep-all;
+        }
+
+        .sub {
+            text-align: center;
+            color: #FFD89A;
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 1.8rem;
+            border-bottom: 1px dashed #ffaa55;
+            display: inline-block;
+            width: auto;
+            margin-left: auto;
+            margin-right: auto;
+            padding-bottom: 6px;
+        }
+
+        .time-setup {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 2rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .time-field {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.4rem;
+            background: rgba(30, 25, 20, 0.7);
+            padding: 0.7rem 1rem;
+            border-radius: 2rem;
+            min-width: 100px;
+            border: 1px solid #ffaa55;
+        }
+
+        .time-field label {
+            font-weight: 700;
+            color: #FFCF8A;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+
+        .time-field input {
+            background: #1e1b16;
+            border: none;
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: 700;
+            width: 90px;
+            padding: 0.3rem 0;
+            border-radius: 1.5rem;
+            color: #FFC107;
+            font-family: monospace;
+            outline: none;
+            border: 1px solid #ffaa55;
+        }
+
+        .time-field input:focus {
+            border-color: #FF8C00;
+            background: #2a241c;
+            box-shadow: 0 0 8px #ffaa55;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        button {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            border: 1px solid #ffb347;
+            padding: 0.8rem 1.6rem;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 3rem;
+            color: #FFF0CC;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: inherit;
+        }
+
+        button:hover {
+            background: #ff9f2e;
+            border-color: #fff0b5;
+            color: #1f1b12;
+            transform: scale(0.97);
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        #stopBtn {
+            background: #7a3e1eaa;
+            border-color: #ffaa66;
+        }
+
+        .timer-display-container {
+            background: #00000070;
+            border-radius: 2rem;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            text-align: center;
+            backdrop-filter: blur(5px);
+            border: 1px solid #ffaa55;
+        }
+
+        #timerDisplay {
+            font-family: 'Courier New', monospace;
+            font-size: 4rem;
+            font-weight: 800;
+            letter-spacing: 6px;
+            color: #FFF2C9;
+            text-shadow: 0 0 10px #ff8c00, 0 0 3px #ff5500;
+            background: #00000066;
+            display: inline-block;
+            padding: 0.3rem 1.2rem;
+            border-radius: 2.5rem;
+        }
+
+        .quick-preset {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.7rem;
+            margin: 1rem 0 0.8rem;
+        }
+
+        .preset-btn {
+            background: #2c241ce6;
+            padding: 0.45rem 1.2rem;
+            font-size: 0.85rem;
+            border-radius: 2rem;
+            border-color: #e6a017;
+        }
+
+        @keyframes ringFlash {
+            0% { background: rgba(255, 80, 0, 0.3); border-color: #ffaa44; text-shadow: 0 0 6px red; }
+            100% { background: rgba(255, 60, 0, 0.7); border-color: #ffcc33; }
+        }
+        .ring-animation {
+            animation: ringFlash 0.25s ease-in-out 4;
+        }
+
+        @media (max-width: 550px) {
+            .timer-card { padding: 1.3rem; }
+            #timerDisplay { font-size: 2.4rem; letter-spacing: 3px; }
+            .time-field input { width: 70px; font-size: 1.4rem; }
+        }
+
+        .brainrot-footer {
+            text-align: center;
+            font-size: 0.7rem;
+            margin-top: 1.2rem;
+            color: #ffbc6e;
+            background: #00000050;
+            border-radius: 40px;
+            padding: 5px;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+</head>
+<body>
+
+<div class="timer-card">
+    <h1>🧠 БРЕHРОТЫ ⏰</h1>
+    <div style="text-align: center;"><span class="sub">Иди нахуй</span></div>
+
+    <div class="time-setup">
+        <div class="input-group">
+            <div class="time-field">
+                <label>⏱️ ЧАСЫ</label>
+                <input type="number" id="hoursInput" min="0" max="99" value="0" step="1">
+            </div>
+            <div class="time-field">
+                <label>⏲️ МИНУТЫ</label>
+                <input type="number" id="minutesInput" min="0" max="59" value="0" step="1">
+            </div>
+            <div class="time-field">
+                <label>🔔 СЕКУНДЫ</label>
+                <input type="number" id="secondsInput" min="0" max="59" value="5" step="1">
+            </div>
+        </div>
+
+        <div class="quick-preset">
+            <button class="preset-btn" data-minutes="0" data-seconds="30">30 сек</button>
+            <button class="preset-btn" data-minutes="1" data-seconds="0">1 мин</button>
+            <button class="preset-btn" data-minutes="3" data-seconds="0">3 мин</button>
+            <button class="preset-btn" data-minutes="5" data-seconds="0">5 мин</button>
+            <button class="preset-btn" data-minutes="10" data-seconds="0">10 мин</button>
+        </div>
+
+        <div class="actions">
+            <button id="startBtn">▶ ЗАПУСТИТЬ ТАЙМЕР</button>
+            <button id="stopBtn">⏹️ СБРОС / СТОП</button>
+        </div>
+    </div>
+
+    <div class="timer-display-container">
+        <div id="timerDisplay">00:00:00</div>
+    </div>
+    <div class="brainrot-footer">
+        🧟‍♂️ХУЙ СОСИ🧟‍♀️
+    </div>
+</div>
+
+<script>
+    (function(){
+        const hoursInp = document.getElementById('hoursInput');
+        const minutesInp = document.getElementById('minutesInput');
+        const secondsInp = document.getElementById('secondsInput');
+        const startBtn = document.getElementById('startBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const timerDisplay = document.getElementById('timerDisplay');
+        const presetBtns = document.querySelectorAll('.preset-btn');
+        
+        let countdownInterval = null;
+        let remainingSeconds = 0;
+        let isActive = false;
+        let ringAudio = new Audio('1.mp3');
+        ringAudio.preload = 'auto';
+        ringAudio.loop = false;
+        ringAudio.volume = 0.9;
+        
+        function formatTime(secTotal){
+            if(secTotal < 0) secTotal = 0;
+            const hrs = Math.floor(secTotal / 3600);
+            const mins = Math.floor((secTotal % 3600) / 60);
+            const secs = secTotal % 60;
+            return `${hrs.toString().padStart(2,'0')}:${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
+        }
+        
+        function updateDisplay(){
+            timerDisplay.innerText = formatTime(remainingSeconds);
+        }
+        
+        function getSecondsFromInputs(){
+            let h = parseInt(hoursInp.value) || 0;
+            let m = parseInt(minutesInp.value) || 0;
+            let s = parseInt(secondsInp.value) || 0;
+            if(h < 0) h = 0;
+            if(m < 0) m = 0;
+            if(s < 0) s = 0;
+            if(m > 59) m = 59;
+            if(s > 59) s = 59;
+            return (h * 3600) + (m * 60) + s;
+        }
+        
+        function setInputsFromSeconds(totalSec){
+            const hrs = Math.floor(totalSec / 3600);
+            const mins = Math.floor((totalSec % 3600) / 60);
+            const secs = totalSec % 60;
+            hoursInp.value = hrs;
+            minutesInp.value = mins;
+            secondsInp.value = secs;
+        }
+        
+        function stopTimerAndReset(resetToInputs = true){
+            if(countdownInterval){
+                clearInterval(countdownInterval);
+                countdownInterval = null;
+            }
+            isActive = false;
+            ringAudio.pause();
+            ringAudio.currentTime = 0;
+            document.querySelector('.timer-card')?.classList.remove('ring-animation');
+            if(resetToInputs){
+                remainingSeconds = getSecondsFromInputs();
+                updateDisplay();
+            } else {
+                updateDisplay();
+            }
+        }
+        
+        function warmupAudio(){
+            let promise = ringAudio.play();
+            if(promise !== undefined){
+                promise.then(() => {
+                    ringAudio.pause();
+                    ringAudio.currentTime = 0;
+                }).catch(() => {});
+            }
+        }
+        
+        function playRingtone(){
+            const card = document.querySelector('.timer-card');
+            if(card){
+                card.classList.remove('ring-animation');
+                void card.offsetWidth;
+                card.classList.add('ring-animation');
+                setTimeout(() => card.classList.remove('ring-animation'), 1200);
+            }
+            ringAudio.currentTime = 0;
+            ringAudio.play().catch(e => {
+                const fallbackCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = fallbackCtx.createOscillator();
+                const gain = fallbackCtx.createGain();
+                osc.connect(gain);
+                gain.connect(fallbackCtx.destination);
+                osc.frequency.value = 880;
+                gain.gain.value = 0.25;
+                osc.type = 'sine';
+                const now = fallbackCtx.currentTime;
+                gain.gain.setValueAtTime(0.25, now);
+                gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.5);
+                osc.start();
+                osc.stop(now + 1.3);
+                if(fallbackCtx.state === 'suspended') fallbackCtx.resume();
+            });
+        }
+        
+        function startTimer(){
+            if(countdownInterval){
+                clearInterval(countdownInterval);
+                countdownInterval = null;
+                ringAudio.pause();
+                ringAudio.currentTime = 0;
+                isActive = false;
+            }
+            let totalSec = getSecondsFromInputs();
+            if(totalSec <= 0){
+                alert("Бля устонови время еблан");
+                return;
+            }
+            remainingSeconds = totalSec;
+            updateDisplay();
+            warmupAudio();
+            const endTime = Date.now() + (remainingSeconds * 1000);
+            isActive = true;
+            countdownInterval = setInterval(() => {
+                if(!isActive) return;
+                const now = Date.now();
+                let diff = Math.ceil((endTime - now) / 1000);
+                if(diff <= 0){
+                    clearInterval(countdownInterval);
+                    countdownInterval = null;
+                    isActive = false;
+                    remainingSeconds = 0;
+                    updateDisplay();
+                    playRingtone();
+                    return;
+                }
+                remainingSeconds = diff;
+                updateDisplay();
+            }, 150);
+        }
+        
+        function resetTimer(){
+            if(countdownInterval){
+                clearInterval(countdownInterval);
+                countdownInterval = null;
+            }
+            isActive = false;
+            ringAudio.pause();
+            ringAudio.currentTime = 0;
+            const currentInputSec = getSecondsFromInputs();
+            remainingSeconds = currentInputSec;
+            updateDisplay();
+            document.querySelector('.timer-card')?.classList.remove('ring-animation');
+        }
+        
+        function applyPreset(minutes, seconds){
+            if(isActive) resetTimer();
+            const total = minutes * 60 + seconds;
+            setInputsFromSeconds(total);
+            remainingSeconds = total;
+            updateDisplay();
+        }
+        
+        function syncDisplayFromInputs(){
+            if(!isActive){
+                remainingSeconds = getSecondsFromInputs();
+                updateDisplay();
+            }
+        }
+        
+        hoursInp.addEventListener('input', syncDisplayFromInputs);
+        minutesInp.addEventListener('input', syncDisplayFromInputs);
+        secondsInp.addEventListener('input', syncDisplayFromInputs);
+        
+        startBtn.addEventListener('click', startTimer);
+        stopBtn.addEventListener('click', resetTimer);
+        
+        presetBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const mins = parseInt(btn.getAttribute('data-minutes')) || 0;
+                const secs = parseInt(btn.getAttribute('data-seconds')) || 0;
+                applyPreset(mins, secs);
+            });
+        });
+        
+        [hoursInp, minutesInp, secondsInp].forEach(inp => {
+            inp.addEventListener('change', function(){
+                let val = parseInt(this.value);
+                if(isNaN(val)) val = 0;
+                if(this.id === 'hoursInput' && val > 99) val = 99;
+                if((this.id === 'minutesInput' || this.id === 'secondsInput') && val > 59) val = 59;
+                if(val < 0) val = 0;
+                this.value = val;
+                syncDisplayFromInputs();
+            });
+        });
+        
+        remainingSeconds = getSecondsFromInputs();
+        updateDisplay();
+    })();
+</script>
+</body>
+</html>
